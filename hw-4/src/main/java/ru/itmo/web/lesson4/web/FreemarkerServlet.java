@@ -48,15 +48,18 @@ public class FreemarkerServlet extends HttpServlet {
         String uri = request.getRequestURI();
         if (uri.split("/").length == 0) {
             uri = "/index";
+            response.setStatus(HttpServletResponse.SC_TEMPORARY_REDIRECT);
         }
 
         Template template;
         try {
             template = cfg.getTemplate(URLDecoder.decode(uri, UTF_8) + ".ftlh");
-        } catch (TemplateNotFoundException ignored) {
+        } catch (TemplateNotFoundException | IllegalArgumentException ignored) {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 //            return;
             template = cfg.getTemplate("404.ftlh");
+        } catch (Exception e) {
+            throw e;
         }
 
         Map<String, Object> data = getData(request);

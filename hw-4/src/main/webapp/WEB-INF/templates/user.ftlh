@@ -19,9 +19,10 @@
             <div>
                 <@c.userlink u/>
                 <ul>
-                    <li>${u.id}</li>
-                    <li>${u.handle}</li>
-                    <li>${u.name}</li>
+                    <li>name: ${u.name}</li>
+                    <li>handle: ${u.handle}</li>
+                    <li>id: ${u.id}</li>
+                    <li>posts: <a href="/posts?user_id=${u.id}">${posts?filter(p -> p.userId == u.id)?size}</a></li>
                 </ul>
             </div>
             <img src="https://userpic.codeforces.com/no-title.jpg" alt="picture">

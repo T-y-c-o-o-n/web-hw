@@ -1,0 +1,5 @@
+[#ftl]
+[#-- @implicitly included --]
+[#-- @ftlvariable name="href" type="java.lang.String" file="../webapp/WEB-INF/templates/common.ftlh" --]
+[#-- @ftlvariable name="users" type="ru.itmo.web.lesson4.model.User[]" --]
+[#-- @ftlvariable name="user" type="ru.itmo.web.lesson4.model.User" --]

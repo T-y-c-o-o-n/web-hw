@@ -11,17 +11,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MessagesServlet extends HttpServlet {
-    private static final String authReqWithUserUriPrefix = "/messages/auth?user=";
-    private static final String addReqWithTextUriPrefix = "/messages/add?text=";
-    private static List<Message> messages;
+    private final Chat chat = new Chat();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        System.out.println("MESSAGES");
+
         String uri = request.getRequestURI();
 
         Object data = "";
 
-        if (uri.startsWith("/messages/auth")) {
+        if ("/messages/auth".equals(uri)) {
             System.out.println("here 1");
             String user = request.getParameter("user");
             if (user == null) {
@@ -29,18 +29,15 @@ public class MessagesServlet extends HttpServlet {
             }
             request.getSession().setAttribute("user", user);
             data = user;
-        } else if (uri.startsWith("/messages/findAll")) {
+        } else if ("/messages/findAll".equals(uri)) {
             System.out.println("here 2");
-            data = messages;
-        } else if (uri.startsWith("/messages/add")) {
+            data = chat.toString();
+        } else if ("/messages/add".equals(uri)) {
             System.out.println("here 3");
             String user = request.getParameter("user");
             String text = request.getParameter("text");
 
-            if (messages == null) {
-                messages = new ArrayList<>();
-            }
-            messages.add(new Message(user, text));
+            chat.addMessage(user, text);
         }
 
         response.setContentType("application/json");
@@ -48,13 +45,27 @@ public class MessagesServlet extends HttpServlet {
         response.getWriter().print(json);
         response.getWriter().flush();
     }
+    
+    private static class Chat {
+	private final List<Message> messages = new ArrayList<>();
+	
+	
+	public void addMessage(String user, String name) {
+	    messages.add(new Message(user, name));
+	}
 
-    private static class Message {
-        public final String user, name;
-
-        public Message(String user, String name) {
-            this.user = user;
-            this.name = name;
+        @Override
+        public String toString() {
+            return messages.toString();
         }
+
+        private static class Message {
+	    public final String user, name;
+	
+    	    public Message(String user, String name) {
+    	        this.user = user;
+    	        this.name = name;
+    	    }
+    	}   
     }
 }

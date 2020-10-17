@@ -33,7 +33,7 @@
         </div>
         <div class="enter-or-register-box">
             <#if user??>
-                <@userlink user/>
+                <@userlink user true/>
                 |
                 <a href="/logout">Logout</a>
             <#else>
@@ -66,33 +66,15 @@
 
 <#macro sidebar>
     <aside>
-        <section>
-            <div class="header">Information</div>
-            <div class="body">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores enim expedita facilis
-                fugiat ipsum iste nobis reprehenderit tempore ut voluptatibus?
-            </div>
-            <div class="footer">
-                <a href="#">View all</a>
-            </div>
-        </section>
-        <section>
-            <div class="header">Information</div>
-            <div class="body">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores enim expedita facilis
-                fugiat ipsum iste nobis reprehenderit tempore ut voluptatibus?
-            </div>
-            <div class="footer">
-                <a href="#">View all</a>
-            </div>
-        </section>
-        <section>
-            <div class="header">Information</div>
-            <div class="body">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores enim expedita facilis
-                fugiat ipsum iste nobis reprehenderit tempore ut voluptatibus?
-            </div>
-            <div class="footer">
-                <a href="#">View all</a>
-            </div>
-        </section>
+        <#list posts as post>
+            <section>
+                <div class="header">Post ${post.id}</div>
+                <@bodyOfPost post false/>
+                <div class="footer">
+                    <a href="/post?post_id=${post.id}">View all</a>
+                </div>
+            </section>
+        </#list>
     </aside>
 </#macro>
 
@@ -102,8 +84,13 @@
     </footer>
 </#macro>
 
-<#macro userlink user>
-    <a href="/user?handle=${user.handle}">${user.name}</a>
+<#macro userlink user nameOnly=false>
+    <#if nameOnly>
+        <a class="name-only" href="/user?handle=${user.handle}">${user.name}</a>
+    <#else>
+        <a style="color: ${user.color}; text-decoration: none; font-weight: bold"
+           href="/user?handle=${user.handle}">${user.handle}</a>
+    </#if>
 </#macro>
 
 <#function findBy items key value>
@@ -129,3 +116,46 @@
         </#if>
     </#list>
 </#function>
+
+<#macro renderPost post full=false>
+    <#if post?has_content>
+        <article>
+            <a class="title" href="/post?post_id=${post.id}">
+                <div class="title">${post.title}</div>
+            </a>
+            <div class="information">By <@userlink findBy(users, "id", post.userId)/></div>
+            <@bodyOfPost post full/>
+            <ul class="attachment">
+                <li>Announcement of <a href="#">Codeforces Round #510 (Div. 1)</a></li>
+                <li>Announcement of <a href="#">Codeforces Round #510 (Div. 2)</a></li>
+            </ul>
+            <div class="footer">
+                <div class="left">
+                    <img src="img/voteup.png" title="Vote Up" alt="Vote Up"/>
+                    <span class="positive-score">+173</span>
+                    <img src="img/votedown.png" title="Vote Down" alt="Vote Down"/>
+                </div>
+                <div class="right">
+                    <img src="img/date_16x16.png" title="Publish Time" alt="Publish Time"/>
+                    2 days ago
+                    <img src="img/comments_16x16.png" title="Comments" alt="Comments"/>
+                    <a href="#">68</a>
+                </div>
+            </div>
+        </article>
+    <#else>
+        <h1>No Such Post</h1>
+    </#if>
+</#macro>
+
+<#macro bodyOfPost post full=false>
+    <div class="body">
+        <#assign text = post.text/>
+        <#if text?length <= 250 || full>
+            ${text}
+        <#else>
+            ${text[0..250]}
+            ...
+        </#if>
+    </div>
+</#macro>

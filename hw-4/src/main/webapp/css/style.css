@@ -109,15 +109,98 @@ main {
     margin-right: 21rem;
 }
 
-main .user-table .caption {
-    border: var(--border);
-    border-top-left-radius: var(--border-radius);
-    border-top-right-radius: var(--border-radius);
+main article {
+    margin-bottom: 2rem;
 }
 
-main .user-table table th {
+
+main article .title {
+    text-decoration: none;
+    color: #483d99;
+    font-size: x-large;
+}
+
+main article .information {
+    color: var(--border-color);
+    margin-top: 1rem;
+}
+
+main article .body {
+    border-left: 3px solid var(--border-color);
+    padding-left: 10px;
+    margin-top: 1rem;
+}
+
+main article ul.attachment {
+    padding-left: 0;
+    margin-top: 2rem;
+}
+
+main article ul.attachment li {
+    color: var(--border-color);
+    padding-left: 18px;
+    background: url(../img/paperclip-16x16.png);
+    background-repeat: no-repeat;
+    list-style-type: none;
+}
+
+
+main article .footer {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    display: flow-root;
+}
+
+main article .footer .left {
+    display: inline;
+    float: left;
+    margin: 0.5rem 0 0.2rem 0.5rem;
+}
+
+main article .footer .left img, span {
+    vertical-align: middle;
+}
+
+main article .footer .right img, a {
+    vertical-align: middle;
+}
+
+main article .footer .right {
+    display: inline;
+    float: right;
+    margin: 0.5rem 0.5rem 0.5rem 0;
+}
+
+main .user-table {
+    position: relative;
+}
+
+main .user-table .caption {
+    border-collapse: collapse;
     border: var(--border);
-    border-collapse
+    background-color: var(--border-color);
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+    padding: 0.3rem 0 0.2rem 0.5rem;
+}
+
+main .user-table table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+main .user-table table th, td {
+    border: var(--border);
+    text-align: center;
+    padding: 0.3rem 0 0.3rem 0;
+}
+
+main .user-table table thead th {
+    font-weight: bold;
+}
+
+main .user-table table tbody tr:nth-child(2n+1) {
+    background-color: rgb(220, 220, 220);
 }
 
 main .user-section {
@@ -126,7 +209,7 @@ main .user-section {
     border-radius: var(--border-radius);
 }
 
-main .user-section a {
+main .user-section > div > a {
     font-size: x-large;
     margin: 0.1rem 0 0 0.5rem;
 }

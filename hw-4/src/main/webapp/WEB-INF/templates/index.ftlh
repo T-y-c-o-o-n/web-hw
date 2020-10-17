@@ -1,5 +1,7 @@
 <#import "./common.ftlh" as c>
 
 <@c.page>
-    This is index!
+    <#list posts as post>
+        <@c.renderPost post/>
+    </#list>
 </@c.page>

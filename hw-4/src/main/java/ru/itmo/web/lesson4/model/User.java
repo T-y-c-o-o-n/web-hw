@@ -29,7 +29,7 @@ public class User {
         return color;
     }
 
-    public static enum Color {
+    public enum Color {
         RED("red"), GREEN("green"), BLUE("blue");
 
         private final String name;

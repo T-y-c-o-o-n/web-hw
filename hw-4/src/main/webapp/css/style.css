@@ -230,12 +230,30 @@ main .user-section img {
 
 main .usr_link_arrow {
     color: blue;
+    text-decoration: none;
     font-size: 200%;
 }
 
 main .just_arrow {
     color: rgb(185, 185, 185);
     font-size: 200%;
+}
+
+.user {
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.red-user {
+    color: red;
+}
+
+.blue-user {
+    color: blue;
+}
+
+.green-user {
+    color: green;
 }
 
 footer {

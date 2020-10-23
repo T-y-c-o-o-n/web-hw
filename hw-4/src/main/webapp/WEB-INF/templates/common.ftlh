@@ -69,7 +69,7 @@
         <#list posts as post>
             <section>
                 <div class="header">Post ${post.id}</div>
-                <@bodyOfPost post false/>
+                <@postBody post false/>
                 <div class="footer">
                     <a href="/post?post_id=${post.id}">View all</a>
                 </div>
@@ -88,8 +88,7 @@
     <#if nameOnly>
         <a class="name-only" href="/user?handle=${user.handle}">${user.name}</a>
     <#else>
-        <a style="color: ${user.color}; text-decoration: none; font-weight: bold"
-           href="/user?handle=${user.handle}">${user.handle}</a>
+        <a class="${user.color}-user user" href="/user?handle=${user.handle}">${user.handle}</a>
     </#if>
 </#macro>
 
@@ -117,14 +116,14 @@
     </#list>
 </#function>
 
-<#macro renderPost post full=false>
+<#macro pagePost post full=false>
     <#if post?has_content>
         <article>
             <a class="title" href="/post?post_id=${post.id}">
                 <div class="title">${post.title}</div>
             </a>
             <div class="information">By <@userlink findBy(users, "id", post.userId)/></div>
-            <@bodyOfPost post full/>
+            <@postBody post full/>
             <ul class="attachment">
                 <li>Announcement of <a href="#">Codeforces Round #510 (Div. 1)</a></li>
                 <li>Announcement of <a href="#">Codeforces Round #510 (Div. 2)</a></li>
@@ -148,7 +147,7 @@
     </#if>
 </#macro>
 
-<#macro bodyOfPost post full=false>
+<#macro postBody post full=false>
     <div class="body">
         <#assign text = post.text/>
         <#if text?length <= 250 || full>

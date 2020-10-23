@@ -5,7 +5,7 @@ import java.util.Map;
 
 @SuppressWarnings({"unused", "RedundantSuppression"})
 public class NotFoundPage {
-    private void action(HttpServletRequest request, Map<String, Object> view) {
+    private void action() {
         // No operations.
     }
 }

@@ -1,7 +1,7 @@
 <#import "./common.ftlh" as c>
 
 <@c.page>
-    <#list posts as post>
-        <@c.renderPost post/>
+    <#list posts?reverse as post>
+        <@c.pagePost post/>
     </#list>
 </@c.page>

@@ -4,7 +4,7 @@
     <#if post_id?has_content && post_id?is_number>
         <#assign post = c.findBy(posts, "id", post_id)!/>
         <#if post?has_content>
-            <@c.renderPost post true/>
+            <@c.pagePost post true/>
         <#else>
             <h1>No such post</h1>
         </#if>

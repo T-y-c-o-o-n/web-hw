@@ -1,1 +1,1 @@
-Web hometasks on Web Development course in ITMO University
+Hometasks on Web Development course in ITMO University

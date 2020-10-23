@@ -7,7 +7,7 @@ import java.util.Map;
 
 @SuppressWarnings({"unused", "RedundantSuppression"})
 public class HelpPage {
-    private void action(HttpServletRequest request, Map<String, Object> view) {
+    private void action() {
         // No operations.
     }
 }

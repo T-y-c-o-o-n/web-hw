@@ -14,7 +14,7 @@ public class LogoutPage extends Page {
         if (user != null) {
             session.removeAttribute("user");
             setMessage("Good bye. Hope to see you soon!");
-//            eventService.addEvent(new Event(user.getId(), Event.Type.LOGOUT));
+            eventService.addEvent(new Event(user.getId(), Event.Type.LOGOUT));
         }
 
         throw new RedirectException("/index");

@@ -1,6 +1,8 @@
 package ru.itmo.wp.model.domain;
 
-import java.sql.Date;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Event {
     private long id;
@@ -52,6 +54,12 @@ public class Event {
         ENTER("ENTER"), LOGOUT("LOGOUT");
 
         private final String name;
+        private static final Map<String, Type> strToType = new HashMap<>();
+
+        static {
+            strToType.put(ENTER.name, ENTER);
+            strToType.put(LOGOUT.name, LOGOUT);
+        }
 
         Type(String name) {
             this.name = name;
@@ -59,6 +67,10 @@ public class Event {
 
         public String getName() {
             return name;
+        }
+
+        public static Type getType(String name) {
+            return strToType.get(name);
         }
     }
 }

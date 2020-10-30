@@ -1,6 +1,7 @@
 package ru.itmo.wp.model.repository.impl;
 
 import ru.itmo.wp.model.domain.Event;
+import ru.itmo.wp.model.domain.User;
 import ru.itmo.wp.model.exception.RepositoryException;
 import ru.itmo.wp.model.repository.EventRepository;
 
@@ -13,7 +14,7 @@ public class EventRepositoryImpl extends BasicRepositoryImpl<Event> implements E
 
     public void save(Event event) {
         try (Connection connection = DATA_SOURCE.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("INSERT INTO `User` " +
+            try (PreparedStatement statement = connection.prepareStatement("INSERT INTO `Event` " +
                     "(`userId`, `type`, `creationTime`) VALUES (?, ?, NOW())", Statement.RETURN_GENERATED_KEYS)) {
                 statement.setLong(1, event.getUserId());
                 statement.setString(2, event.getType().toString());
@@ -36,6 +37,30 @@ public class EventRepositoryImpl extends BasicRepositoryImpl<Event> implements E
 
     @Override
     protected Event toModel(ResultSetMetaData metaData, ResultSet resultSet) throws SQLException {
-        return null;
+        if (!resultSet.next()) {
+            return null;
+        }
+
+        Event event = new Event();
+        for (int i = 1; i <= metaData.getColumnCount(); i++) {
+            switch (metaData.getColumnName(i)) {
+                case "id":
+                    event.setId(resultSet.getLong(i));
+                    break;
+                case "userId":
+                    event.setUserId(resultSet.getLong(i));
+                    break;
+                case "type":
+                    event.setType(Event.Type.getType(resultSet.getString(i)));
+                    break;
+                case "creationTime":
+                    event.setCreationTime(resultSet.getTimestamp(i));
+                    break;
+                default:
+                    // No operations.
+            }
+        }
+
+        return event;
     }
 }

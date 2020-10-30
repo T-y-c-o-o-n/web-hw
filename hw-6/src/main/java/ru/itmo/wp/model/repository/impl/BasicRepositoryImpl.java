@@ -8,6 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class BasicRepositoryImpl<T> {
     protected final DataSource DATA_SOURCE = DatabaseUtils.getDataSource();
@@ -20,7 +21,7 @@ public abstract class BasicRepositoryImpl<T> {
     protected abstract T toModel(ResultSetMetaData metaData, ResultSet resultSet) throws SQLException;
 
     public T find(long id) {
-        return findByKeys(new KeyTrinity("id", KeyType.LONG, id));
+        return findByKeys(new Pair("id", id));
     }
 
     public List<T> findAll() {
@@ -55,30 +56,15 @@ public abstract class BasicRepositoryImpl<T> {
         }
     }
 
-    protected T findByKeys(KeyTrinity... keys) {
-        int keyCount = keys.length;
+    protected T findByKeys(Pair... pairs) {
         try (Connection connection = DATA_SOURCE.getConnection()) {
-            StringBuilder str = new StringBuilder();
-            for (KeyTrinity trinity : keys) {
-                if (str.length() == 0) {
-                    str.append("`").append(trinity.key).append("`=?");
-                } else {
-                    str.append(" AND `").append(trinity.key).append("`=?");
-                }
-            }
+            String params = Arrays.stream(pairs).map((el) -> String.format("`%s`=?", el.key))
+                    .collect(Collectors.joining(" AND "));
+
             try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM `" + modelName
-                    + "` WHERE " + str.toString())) {
-                for (int i = 0; i < keys.length; i++) {
-                    switch (keys[i].keyType) {
-                        case STRING:
-                            statement.setString(i + 1, (String) keys[i].val);
-                            break;
-                        case LONG:
-                            statement.setLong(i + 1, (Long) keys[i].val);
-                            break;
-                        default:
-                            throw new RepositoryException("Unsupported key type");
-                    }
+                    + "` WHERE " + params)) {
+                for (int i = 0; i < pairs.length; i++) {
+                    statement.setObject(i + 1, pairs[i].val);
                 }
                 try (ResultSet resultSet = statement.executeQuery()) {
                     return toModel(statement.getMetaData(), resultSet);
@@ -89,19 +75,13 @@ public abstract class BasicRepositoryImpl<T> {
         }
     }
 
-    protected static class KeyTrinity {
+    protected static class Pair {
         final String key;
-        final KeyType keyType;
         final Object val;
 
-        public KeyTrinity(String key, KeyType keyType, Object val) {
+        public Pair(String key, Object val) {
             this.key = key;
-            this.keyType = keyType;
             this.val = val;
         }
-    }
-
-    protected enum KeyType {
-        STRING, LONG;
     }
 }

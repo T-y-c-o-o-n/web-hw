@@ -1,11 +1,9 @@
 package ru.itmo.wp.model.repository.impl;
 
-import ru.itmo.wp.model.database.DatabaseUtils;
 import ru.itmo.wp.model.domain.User;
 import ru.itmo.wp.model.exception.RepositoryException;
 import ru.itmo.wp.model.repository.UserRepository;
 
-import javax.sql.DataSource;
 import java.sql.*;
 
 public class UserRepositoryImpl extends BasicRepositoryImpl<User> implements UserRepository {
@@ -16,24 +14,24 @@ public class UserRepositoryImpl extends BasicRepositoryImpl<User> implements Use
 
     @Override
     public User findByLogin(String login) {
-        return findByKeys(new KeyTrinity("login", KeyType.STRING, login));
+        return findByKeys(new Pair("login", login));
     }
 
     @Override
     public User findByEmail(String email) {
-        return findByKeys(new KeyTrinity("email", KeyType.STRING, email));
+        return findByKeys(new Pair("email", email));
     }
 
     @Override
     public User findByLoginAndPasswordSha(String login, String passwordSha) {
-        return findByKeys(new KeyTrinity("login", KeyType.STRING, login),
-                new KeyTrinity("passwordSha", KeyType.STRING, passwordSha));
+        return findByKeys(new Pair("login", login),
+                new Pair("passwordSha", passwordSha));
     }
 
     @Override
     public User findByEmailAndPasswordSha(String email, String passwordSha) {
-        return findByKeys(new KeyTrinity("email", KeyType.STRING, email),
-                new KeyTrinity("passwordSha", KeyType.STRING, passwordSha));
+        return findByKeys(new Pair("email", email),
+                new Pair("passwordSha", passwordSha));
     }
 
     @Override

@@ -9,13 +9,20 @@ import java.util.Map;
 @SuppressWarnings({"unused", "RedundantSuppression"})
 public class TicTacToePage {
     private void action(HttpServletRequest request, Map<String, Object> view) {
-        newGame(request, view);
+        State state = (State) request.getSession().getAttribute("gameState");
+        if (state == null) {
+            newGame(request, view);
+        } else {
+            view.put("state", state);
+        }
     }
 
     private void newGame(HttpServletRequest request, Map<String, Object> view) {
         State state = new State(3);
         request.getSession().setAttribute("gameState", state);
         view.put("state", state);
+
+        throw new RedirectException(request.getRequestURI());
     }
 
     private void onMove(HttpServletRequest request, Map<String, Object> view) {
@@ -35,6 +42,8 @@ public class TicTacToePage {
             }
         }
         view.put("state", state);
+
+        throw new RedirectException(request.getRequestURI());
     }
 
     public static class State {

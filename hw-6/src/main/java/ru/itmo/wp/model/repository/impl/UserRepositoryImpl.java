@@ -7,74 +7,37 @@ import ru.itmo.wp.model.repository.UserRepository;
 
 import javax.sql.DataSource;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
-public class UserRepositoryImpl implements UserRepository {
-    private final DataSource DATA_SOURCE = DatabaseUtils.getDataSource();
+public class UserRepositoryImpl extends BasicRepositoryImpl<User> implements UserRepository {
 
-    @Override
-    public User find(long id) {
-        try (Connection connection = DATA_SOURCE.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM User WHERE id=?")) {
-                statement.setLong(1, id);
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    return toUser(statement.getMetaData(), resultSet);
-                }
-            }
-        } catch (SQLException e) {
-            throw new RepositoryException("Can't find User.", e);
-        }
+    public UserRepositoryImpl() {
+        super("User");
     }
 
     @Override
     public User findByLogin(String login) {
-        try (Connection connection = DATA_SOURCE.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM User WHERE login=?")) {
-                statement.setString(1, login);
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    return toUser(statement.getMetaData(), resultSet);
-                }
-            }
-        } catch (SQLException e) {
-            throw new RepositoryException("Can't find User.", e);
-        }
+        return findByKeys(new KeyTrinity("login", KeyType.STRING, login));
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        return findByKeys(new KeyTrinity("email", KeyType.STRING, email));
     }
 
     @Override
     public User findByLoginAndPasswordSha(String login, String passwordSha) {
-        try (Connection connection = DATA_SOURCE.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM User WHERE login=? AND passwordSha=?")) {
-                statement.setString(1, login);
-                statement.setString(2, passwordSha);
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    return toUser(statement.getMetaData(), resultSet);
-                }
-            }
-        } catch (SQLException e) {
-            throw new RepositoryException("Can't find User.", e);
-        }
+        return findByKeys(new KeyTrinity("login", KeyType.STRING, login),
+                new KeyTrinity("passwordSha", KeyType.STRING, passwordSha));
     }
 
     @Override
-    public List<User> findAll() {
-        List<User> users = new ArrayList<>();
-        try (Connection connection = DATA_SOURCE.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM User ORDER BY id DESC")) {
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    User user;
-                    while ((user = toUser(statement.getMetaData(), resultSet)) != null) {
-                        users.add(user);
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            throw new RepositoryException("Can't find User.", e);
-        }
-        return users;
+    public User findByEmailAndPasswordSha(String email, String passwordSha) {
+        return findByKeys(new KeyTrinity("email", KeyType.STRING, email),
+                new KeyTrinity("passwordSha", KeyType.STRING, passwordSha));
     }
 
-    private User toUser(ResultSetMetaData metaData, ResultSet resultSet) throws SQLException {
+    @Override
+    protected User toModel(ResultSetMetaData metaData, ResultSet resultSet) throws SQLException {
         if (!resultSet.next()) {
             return null;
         }
@@ -84,6 +47,9 @@ public class UserRepositoryImpl implements UserRepository {
             switch (metaData.getColumnName(i)) {
                 case "id":
                     user.setId(resultSet.getLong(i));
+                    break;
+                case "email":
+                    user.setEmail(resultSet.getString(i));
                     break;
                 case "login":
                     user.setLogin(resultSet.getString(i));
@@ -102,9 +68,11 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public void save(User user, String passwordSha) {
         try (Connection connection = DATA_SOURCE.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("INSERT INTO `User` (`login`, `passwordSha`, `creationTime`) VALUES (?, ?, NOW())", Statement.RETURN_GENERATED_KEYS)) {
+            try (PreparedStatement statement = connection.prepareStatement("INSERT INTO `User` " +
+                    "(`login`, `email`, `passwordSha`, `creationTime`) VALUES (?, ?, ?, NOW())", Statement.RETURN_GENERATED_KEYS)) {
                 statement.setString(1, user.getLogin());
-                statement.setString(2, passwordSha);
+                statement.setString(2, user.getEmail());
+                statement.setString(3, passwordSha);
                 if (statement.executeUpdate() != 1) {
                     throw new RepositoryException("Can't save User.");
                 } else {

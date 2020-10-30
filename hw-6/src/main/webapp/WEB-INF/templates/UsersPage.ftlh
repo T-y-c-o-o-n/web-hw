@@ -1,3 +1,4 @@
+<#-- @ftlvariable name="" type="Long" -->
 <#-- @ftlvariable name="users" type="ru.itmo.wp.model.domain.User[]" -->
 <#import "commons.ftlh" as c>
 

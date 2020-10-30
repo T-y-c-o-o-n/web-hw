@@ -8,14 +8,17 @@ import ru.itmo.wp.model.repository.UserRepository;
 import ru.itmo.wp.model.repository.impl.UserRepositoryImpl;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 
-/** @noinspection UnstableApiUsage*/
+/**
+ * @noinspection UnstableApiUsage
+ */
 public class UserService {
     private final UserRepository userRepository = new UserRepositoryImpl();
     private static final String PASSWORD_SALT = "177d4b5f2e4f4edafa7404533973c04c513ac619";
 
-    public void validateRegistration(User user, String password) throws ValidationException {
+    public void validateRegistration(User user, String password, String passwordConfirmation) throws ValidationException {
         if (Strings.isNullOrEmpty(user.getLogin())) {
             throw new ValidationException("Login is required");
         }
@@ -29,6 +32,17 @@ public class UserService {
             throw new ValidationException("Login is already in use");
         }
 
+        if (Strings.isNullOrEmpty(user.getEmail())) {
+            throw new ValidationException("Email is required");
+        }
+        if (!(user.getEmail().indexOf('@') > 0 && user.getEmail().lastIndexOf('@') + 1 < user.getEmail().length()
+                && user.getEmail().indexOf('@') == user.getEmail().lastIndexOf('@'))) {
+            throw new ValidationException("Incorrect email");
+        }
+        if (userRepository.findByEmail(user.getEmail()) != null) {
+            throw new ValidationException("Email is already in user");
+        }
+
         if (Strings.isNullOrEmpty(password)) {
             throw new ValidationException("Password is required");
         }
@@ -37,6 +51,13 @@ public class UserService {
         }
         if (password.length() > 12) {
             throw new ValidationException("Password can't be longer than 12 characters");
+        }
+
+        if (Strings.isNullOrEmpty(passwordConfirmation)) {
+            throw new ValidationException("Password Confirmation is required");
+        }
+        if (!password.equals(passwordConfirmation)) {
+            throw new ValidationException("Passwords are not equal");
         }
     }
 
@@ -52,14 +73,22 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public void validateEnter(String login, String password) throws ValidationException {
-        User user = userRepository.findByLoginAndPasswordSha(login, getPasswordSha(password));
+    public void validateEnter(String loginOrEmail, String password) throws ValidationException {
+        User user = findByLoginOrEmailAndPassword(loginOrEmail, password);
         if (user == null) {
-            throw new ValidationException("Invalid login or password");
+            throw new ValidationException("Invalid login/email or password");
         }
     }
 
-    public User findByLoginAndPassword(String login, String password) {
-        return userRepository.findByLoginAndPasswordSha(login, getPasswordSha(password));
+    public User findByLoginOrEmailAndPassword(String loginOrEmail, String password) {
+        User user = userRepository.findByLoginAndPasswordSha(loginOrEmail, getPasswordSha(password));
+        if (user == null) {
+            user = userRepository.findByEmailAndPasswordSha(loginOrEmail, getPasswordSha(password));
+        }
+        return user;
+    }
+
+    public long findCount() {
+        return userRepository.findCount();
     }
 }

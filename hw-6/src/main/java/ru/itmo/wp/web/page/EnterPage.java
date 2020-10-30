@@ -9,21 +9,16 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @SuppressWarnings({"unused", "RedundantSuppression"})
-public class EnterPage {
-    private final UserService userService = new UserService();
-
-    private void action(HttpServletRequest request, Map<String, Object> view) {
-        // No operations.
-    }
+public class EnterPage extends Page {
 
     private void enter(HttpServletRequest request, Map<String, Object> view) throws ValidationException {
-        String login = request.getParameter("login");
+        String loginOrEmail = request.getParameter("loginOrEmail");
         String password = request.getParameter("password");
 
-        userService.validateEnter(login, password);
-        User user = userService.findByLoginAndPassword(login, password);
-        request.getSession().setAttribute("user", user);
-        request.getSession().setAttribute("message", "Hello, " + user.getLogin());
+        userService.validateEnter(loginOrEmail, password);
+        User user = userService.findByLoginOrEmailAndPassword(loginOrEmail, password);
+        setUser(user);
+        setMessage("Hello, " + user.getLogin());
 
         throw new RedirectException("/index");
     }

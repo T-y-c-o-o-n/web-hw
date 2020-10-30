@@ -43,11 +43,9 @@ public class Event {
     public Event() {
     }
 
-    public Event(long id, long userId, Type type, Date creationTime) {
-        this.id = id;
+    public Event(long userId, Type type) {
         this.userId = userId;
         this.type = type;
-        this.creationTime = creationTime;
     }
 
     public enum Type {

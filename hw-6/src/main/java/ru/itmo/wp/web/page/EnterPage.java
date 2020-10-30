@@ -21,8 +21,6 @@ public class EnterPage extends Page {
         setUser(user);
         setMessage("Hello, " + user.getLogin());
 
-        eventService.addEvent(new Event(user.getId(), Event.Type.ENTER));
-
         throw new RedirectException("/index");
     }
 }

@@ -8,6 +8,6 @@ public class EventService {
     EventRepository eventRepository = new EventRepositoryImpl();
 
     public void addEvent(Event event) {
-        eventRepository.save(event);
+//        eventRepository.save(event);
     }
 }

@@ -36,6 +36,10 @@ public class EventRepositoryImpl extends BasicRepositoryImpl<Event> implements E
     }
 
     @Override
+    protected Event getNewInstance() {
+        return new Event();
+    }
+    @Override
     protected Event toModel(ResultSetMetaData metaData, ResultSet resultSet) throws SQLException {
         if (!resultSet.next()) {
             return null;

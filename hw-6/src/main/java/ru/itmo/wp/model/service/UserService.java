@@ -69,6 +69,10 @@ public class UserService {
         return Hashing.sha256().hashBytes((PASSWORD_SALT + password).getBytes(StandardCharsets.UTF_8)).toString();
     }
 
+    public User find(Long id) {
+        return userRepository.find(id);
+    }
+
     public List<User> findAll() {
         return userRepository.findAll();
     }

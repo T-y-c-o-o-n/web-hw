@@ -2,7 +2,9 @@ package ru.itmo.wp.web.page;
 
 import com.google.common.base.Strings;
 import ru.itmo.wp.model.domain.User;
+import ru.itmo.wp.model.repository.TalkRepository;
 import ru.itmo.wp.model.service.EventService;
+import ru.itmo.wp.model.service.TalkService;
 import ru.itmo.wp.model.service.UserService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +14,7 @@ import java.util.Map;
 public abstract class Page {
     protected final UserService userService = new UserService();
     protected final EventService eventService = new EventService();
+    protected final TalkService talkService = new TalkService();
     protected HttpSession session = null;
 
     protected void before(HttpServletRequest request, Map<String, Object> view) {

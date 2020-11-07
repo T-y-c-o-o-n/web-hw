@@ -1,9 +1,13 @@
 package ru.itmo.wp.model.repository.impl;
 
 import ru.itmo.wp.model.database.*;
+import ru.itmo.wp.model.domain.User;
 import ru.itmo.wp.model.exception.RepositoryException;
 
 import javax.sql.DataSource;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,8 +21,6 @@ public abstract class BasicRepositoryImpl<T> {
     public BasicRepositoryImpl(String modelName) {
         this.modelName = modelName;
     }
-
-    protected abstract T toModel(ResultSetMetaData metaData, ResultSet resultSet) throws SQLException;
 
     public T find(long id) {
         return findByKeys(new Pair("id", id));
@@ -74,6 +76,40 @@ public abstract class BasicRepositoryImpl<T> {
             throw new RepositoryException("Can't find " + modelName + ".", e);
         }
     }
+
+    protected abstract T toModel(ResultSetMetaData metaData, ResultSet resultSet) throws SQLException;
+/*
+    protected T toModel(ResultSetMetaData metaData, ResultSet resultSet) throws SQLException {
+        if (!resultSet.next()) {
+            return null;
+        }
+
+        T model = getNewInstance();
+        Class<?> clazz = model.getClass();
+        Field[] fields = clazz.getDeclaredFields();
+        for (int i = 1; i <= metaData.getColumnCount(); i++) {
+            for (Field field : fields) {
+                if (field.getName().equals(metaData.getColumnName(i))) {
+                    StringBuilder setterName = new StringBuilder("set");
+                    setterName.append(field.getName());
+                    setterName.setCharAt("set".length(), Character.toUpperCase(setterName.charAt("set".length())));
+                    try {
+                        Method method = clazz.getDeclaredMethod(setterName.toString(), field.getType());
+                        method.invoke(model, resultSet.getObject(i));  // Проблема здесь для полей Enum,
+                        // они хранятся в ДБ как строки и возвращаются как строки
+                        break;
+                    } catch (NoSuchMethodException | IllegalAccessException
+                            | InvocationTargetException ignored) {
+                    }
+                }
+            }
+        }
+
+        return model;
+    }
+*/
+
+    protected abstract T getNewInstance();
 
     protected static class Pair {
         final String key;

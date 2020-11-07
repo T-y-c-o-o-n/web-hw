@@ -64,6 +64,11 @@ public class UserRepositoryImpl extends BasicRepositoryImpl<User> implements Use
     }
 
     @Override
+    protected User getNewInstance() {
+        return new User();
+    }
+
+    @Override
     public void save(User user, String passwordSha) {
         try (Connection connection = DATA_SOURCE.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement("INSERT INTO `User` " +

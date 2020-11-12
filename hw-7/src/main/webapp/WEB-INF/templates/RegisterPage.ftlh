@@ -62,25 +62,19 @@
                 const passwordConfirmation = $form.find("input[name='passwordConfirmation']").val();
                 const $error = $form.find(".error");
 
-                $.ajax({
-                    type: "POST",
-                    url: "",
-                    dataType: "json",
-                    data: {
-                        action: "register",
-                        login,
-                        email,
-                        password,
-                        passwordConfirmation
-                    },
-                    success: function (response) {
-                        if (response["error"]) {
-                            $error.text(response["error"]);
-                        } else {
-                            location.href = response["redirect"];
-                        }
+                let data = {
+                    action: "register",
+                    login,
+                    email,
+                    password,
+                    passwordConfirmation
+                };
+                let success = function (response) {
+                    if (response["error"]) {
+                        $error.text(response["error"]);
                     }
-                });
+                };
+                ajax(data, success);
 
                 return false;
             });

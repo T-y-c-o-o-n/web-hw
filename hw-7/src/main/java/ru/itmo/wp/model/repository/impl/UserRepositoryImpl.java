@@ -18,23 +18,6 @@ public class UserRepositoryImpl extends BasicRepositoryImpl<User> implements Use
     }
 
     @Override
-    public User findByEmail(String email) {
-        return findByKeys(new Pair("email", email));
-    }
-
-    @Override
-    public User findByLoginAndPasswordSha(String login, String passwordSha) {
-        return findByKeys(new Pair("login", login),
-                new Pair("passwordSha", passwordSha));
-    }
-
-    @Override
-    public User findByEmailAndPasswordSha(String email, String passwordSha) {
-        return findByKeys(new Pair("email", email),
-                new Pair("passwordSha", passwordSha));
-    }
-
-    @Override
     protected User toModel(ResultSetMetaData metaData, ResultSet resultSet) throws SQLException {
         if (!resultSet.next()) {
             return null;
@@ -61,6 +44,23 @@ public class UserRepositoryImpl extends BasicRepositoryImpl<User> implements Use
         }
 
         return user;
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        return findByKeys(new Pair("email", email));
+    }
+
+    @Override
+    public User findByLoginAndPasswordSha(String login, String passwordSha) {
+        return findByKeys(new Pair("login", login),
+                new Pair("passwordSha", passwordSha));
+    }
+
+    @Override
+    public User findByEmailAndPasswordSha(String email, String passwordSha) {
+        return findByKeys(new Pair("email", email),
+                new Pair("passwordSha", passwordSha));
     }
 
     @Override

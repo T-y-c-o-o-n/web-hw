@@ -138,3 +138,8 @@ aside section .footer a:after {
     background-color: var(--message-background-color);
     text-align: center;
 }
+
+textarea {
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+}

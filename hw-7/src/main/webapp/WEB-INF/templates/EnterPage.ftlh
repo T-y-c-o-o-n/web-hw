@@ -4,7 +4,7 @@
 <#import "commons.ftlh" as c>
 
 <@c.page>
-    <div class="form-box">
+    <div class="entering form-box">
         <div class="header">Enter</div>
         <div class="body">
             <form method="post" action="">
@@ -25,15 +25,36 @@
                         <input id="password" name="password" type="password" value="${password!}"/>
                     </div>
                 </div>
-                <#if error??>
-                    <div class="error">
-                        ${error!}
-                    </div>
-                </#if>
+                <div class="error"></div>
                 <div class="button-field">
                     <input type="submit" value="Enter">
                 </div>
             </form>
         </div>
     </div>
+    <script>
+        $(function () {
+            $(".entering form").submit(
+                function () {
+                    let $form = $(this);
+                    const loginOrEmail = $form.find("input[name='loginOrEmail']").val();
+                    const password = $form.find("input[name='password']").val();
+
+                    let data = {
+                        action: "enter",
+                        loginOrEmail,
+                        password
+                    }
+                    let success = function (response) {
+                        if (response["error"]) {
+                            $form.find(".error").text(response["error"]);
+                        }
+                    }
+                    ajax(data, success);
+
+                    return false;
+                }
+            )
+        })
+    </script>
 </@c.page>

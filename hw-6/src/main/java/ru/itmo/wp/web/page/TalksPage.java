@@ -8,8 +8,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class TalksPage extends Page {
+
     @Override
     protected void before(HttpServletRequest request, Map<String, Object> view) {
         super.before(request, view);
@@ -20,8 +22,9 @@ public class TalksPage extends Page {
     }
 
     private void action(HttpServletRequest request, Map<String, Object> view) {
-
-        view.put("talks", talkService.findAll());
+        view.put("talks", talkService.findAll().stream()
+                .filter((el) -> (el.getSourceUserId() == getUser().getId()
+                        || el.getTargetUserId() == getUser().getId())).collect(Collectors.toList()));
         view.put("users", userService.findAll());
     }
 

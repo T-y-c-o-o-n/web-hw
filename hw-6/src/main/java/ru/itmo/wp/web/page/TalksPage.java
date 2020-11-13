@@ -21,33 +21,23 @@ public class TalksPage extends Page {
             setMessage("To view Chat page you should log in");
             throw new RedirectException("/");
         }
-    }
-
-    private void action(HttpServletRequest request, Map<String, Object> view) {
         view.put("talks", talkService.findAll().stream()
                 .filter((el) -> (el.getSourceUserId() == getUser().getId()
                         || el.getTargetUserId() == getUser().getId())).collect(Collectors.toList()));
         view.put("users", userService.findAll());
     }
 
-    private void send(HttpServletRequest request, Map<String, Object> view) {
-        try {
-            Talk talk = new Talk(getUser().getId(),
-                    Long.parseLong(request.getParameter("target-user-id")),
-                    request.getParameter("talk"));
-            talkService.validate(talk);
-            talkService.addTalk(talk);
+    private void action(HttpServletRequest request, Map<String, Object> view) { }
 
-            throw new RedirectException("/talks");
-        } catch (NumberFormatException | ValidationException e) {
-            if (e instanceof NumberFormatException) {
-                setMessage("Choose user");
-            } else {
-                setMessage(e.getMessage());
-            }
-            putMessage(view);
-            view.put("text", request.getParameter("talk"));
-            action(request, view);
-        }
+    private void send(HttpServletRequest request, Map<String, Object> view) throws ValidationException {
+        long sourceUserId = getUser().getId();
+        String targetLogin = request.getParameter("targetLogin");
+        String text = request.getParameter("text");
+        talkService.validate(sourceUserId, targetLogin, text);
+
+        Talk talk = new Talk(sourceUserId, userService.findByLogin(targetLogin).getId(), text);
+        talkService.addTalk(talk);
+
+        throw new RedirectException("/talks");
     }
 }

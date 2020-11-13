@@ -141,5 +141,12 @@ aside section .footer a:after {
 
 textarea {
     margin-top: 1rem;
-    margin-bottom: 2rem;
+}
+
+.talkError {
+    color: var(--error-color);
+}
+
+.talks {
+    margin-top: 2rem;
 }

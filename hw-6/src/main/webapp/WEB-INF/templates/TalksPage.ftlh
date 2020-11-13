@@ -9,25 +9,27 @@
 
     <form method="post" action="" class="new-message">
         <input type="hidden" name="action" value="send"/>
-        <label for="message">Text</label>
-        <select name="target-user-id">
+        <label for="message">Message</label>
+        <select name="targetLogin">
             <option value="none" hidden="">choose user</option>
-            <#list users as u>
-                <option value="${u.id}">${u.login}</option>
-            </#list>
+            <#if users?has_content>
+                <#list users as u>
+                    <option value="${u.login}">${u.login}</option>
+                </#list>
+            </#if>
         </select>
         <input type="submit" value="send message">
         <div>
-            <textarea name="talk" cols="30" rows="10">${text!}</textarea>
+            <textarea name="text" cols="30" rows="10">${text!}</textarea>
         </div>
         <#if error??>
-            <div class="error">
+            <div class="talkError">
                 ${error!}
             </div>
         </#if>
     </form>
 
-    <div class="datatable">
+    <div class="datatable talks">
         <div class="caption">Messages</div>
         <table>
             <thead>
@@ -40,15 +42,17 @@
             </tr>
             </thead>
             <tbody>
-            <#list talks as talk>
-                <tr>
-                    <td>${talk.id!}</td>
-                    <td>${c.findBy(users "id" talk.sourceUserId).login!}</td>
-                    <td>${c.findBy(users "id" talk.targetUserId).login!}</td>
-                    <td>${talk.text!}</td>
-                    <td>${talk.creationTime!}</td>
-                </tr>
-            </#list>
+            <#if talks?has_content>
+                <#list talks as talk>
+                    <tr>
+                        <td>${talk.id!}</td>
+                        <td>${c.findBy(users "id" talk.sourceUserId).login!}</td>
+                        <td>${c.findBy(users "id" talk.targetUserId).login!}</td>
+                        <td>${talk.text!}</td>
+                        <td>${talk.creationTime!}</td>
+                    </tr>
+                </#list>
+            </#if>
             </tbody>
         </table>
     </div>

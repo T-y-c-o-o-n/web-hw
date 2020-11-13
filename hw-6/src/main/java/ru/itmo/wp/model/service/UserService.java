@@ -73,6 +73,10 @@ public class UserService {
         return userRepository.find(id);
     }
 
+    public User findByLogin(String login) {
+        return userRepository.findByLogin(login);
+    }
+
     public List<User> findAll() {
         return userRepository.findAll();
     }

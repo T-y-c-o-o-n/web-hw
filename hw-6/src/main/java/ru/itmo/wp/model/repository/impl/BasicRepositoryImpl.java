@@ -76,8 +76,6 @@ public abstract class BasicRepositoryImpl<T> {
         }
     }
 
-//    protected abstract T toModel(ResultSetMetaData metaData, ResultSet resultSet) throws SQLException;
-
     protected T toModel(ResultSetMetaData metaData, ResultSet resultSet) throws SQLException {
         if (!resultSet.next()) {
             return null;
@@ -106,8 +104,6 @@ public abstract class BasicRepositoryImpl<T> {
 
         return model;
     }
-
-
 
     protected abstract T getNewInstance();
 

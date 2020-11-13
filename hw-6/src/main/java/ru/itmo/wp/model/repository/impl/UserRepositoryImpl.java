@@ -34,35 +34,6 @@ public class UserRepositoryImpl extends BasicRepositoryImpl<User> implements Use
                 new Pair("passwordSha", passwordSha));
     }
 
-    /*@Override
-    protected User toModel(ResultSetMetaData metaData, ResultSet resultSet) throws SQLException {
-        if (!resultSet.next()) {
-            return null;
-        }
-
-        User user = new User();
-        for (int i = 1; i <= metaData.getColumnCount(); i++) {
-            switch (metaData.getColumnName(i)) {
-                case "id":
-                    user.setId(resultSet.getLong(i));
-                    break;
-                case "email":
-                    user.setEmail(resultSet.getString(i));
-                    break;
-                case "login":
-                    user.setLogin(resultSet.getString(i));
-                    break;
-                case "creationTime":
-                    user.setCreationTime(resultSet.getTimestamp(i));
-                    break;
-                default:
-                    // No operations.
-            }
-        }
-
-        return user;
-    }
-*/
     @Override
     protected User getNewInstance() {
         return new User();

@@ -34,7 +34,7 @@ public class UserRepositoryImpl extends BasicRepositoryImpl<User> implements Use
                 new Pair("passwordSha", passwordSha));
     }
 
-    @Override
+    /*@Override
     protected User toModel(ResultSetMetaData metaData, ResultSet resultSet) throws SQLException {
         if (!resultSet.next()) {
             return null;
@@ -62,7 +62,7 @@ public class UserRepositoryImpl extends BasicRepositoryImpl<User> implements Use
 
         return user;
     }
-
+*/
     @Override
     protected User getNewInstance() {
         return new User();

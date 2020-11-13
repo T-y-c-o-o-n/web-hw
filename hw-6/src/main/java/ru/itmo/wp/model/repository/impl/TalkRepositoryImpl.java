@@ -14,7 +14,7 @@ public class TalkRepositoryImpl extends BasicRepositoryImpl<Talk> implements Tal
         super("Talk");
     }
 
-    @Override
+    /*@Override
     protected Talk toModel(ResultSetMetaData metaData, ResultSet resultSet) throws SQLException {
         if (!resultSet.next()) {
             return null;
@@ -44,7 +44,7 @@ public class TalkRepositoryImpl extends BasicRepositoryImpl<Talk> implements Tal
         }
 
         return talk;
-    }
+    }*/
 
     @Override
     public void save(Talk talk) {

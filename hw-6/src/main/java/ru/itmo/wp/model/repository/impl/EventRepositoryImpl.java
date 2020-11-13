@@ -39,6 +39,7 @@ public class EventRepositoryImpl extends BasicRepositoryImpl<Event> implements E
     protected Event getNewInstance() {
         return new Event();
     }
+    /*
     @Override
     protected Event toModel(ResultSetMetaData metaData, ResultSet resultSet) throws SQLException {
         if (!resultSet.next()) {
@@ -55,7 +56,7 @@ public class EventRepositoryImpl extends BasicRepositoryImpl<Event> implements E
                     event.setUserId(resultSet.getLong(i));
                     break;
                 case "type":
-                    event.setType(Event.Type.getType(resultSet.getString(i)));
+                    event.setType(resultSet.getString(i));
                     break;
                 case "creationTime":
                     event.setCreationTime(resultSet.getTimestamp(i));
@@ -66,5 +67,5 @@ public class EventRepositoryImpl extends BasicRepositoryImpl<Event> implements E
         }
 
         return event;
-    }
+    }*/
 }

@@ -2,9 +2,11 @@ package ru.itmo.wp.web.page;
 
 import ru.itmo.wp.model.domain.Talk;
 import ru.itmo.wp.model.domain.User;
+import ru.itmo.wp.model.exception.ValidationException;
 import ru.itmo.wp.web.exception.RedirectException;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,12 +32,19 @@ public class TalksPage extends Page {
 
     private void send(HttpServletRequest request, Map<String, Object> view) {
         try {
-            talkService.addTalk(new Talk(getUser().getId(),
+            Talk talk = new Talk(getUser().getId(),
                     Long.parseLong(request.getParameter("target-user-id")),
-                    request.getParameter("talk")));
+                    request.getParameter("talk"));
+            talkService.validate(talk);
+            talkService.addTalk(talk);
+
             throw new RedirectException("/talks");
-        } catch (NumberFormatException ignored) {
-            setMessage("Choose user");
+        } catch (NumberFormatException | ValidationException e) {
+            if (e instanceof NumberFormatException) {
+                setMessage("Choose user");
+            } else {
+                setMessage(e.getMessage());
+            }
             putMessage(view);
             view.put("text", request.getParameter("talk"));
             action(request, view);

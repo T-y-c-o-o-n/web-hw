@@ -76,8 +76,8 @@ public abstract class BasicRepositoryImpl<T> {
         }
     }
 
-    protected abstract T toModel(ResultSetMetaData metaData, ResultSet resultSet) throws SQLException;
-/*
+//    protected abstract T toModel(ResultSetMetaData metaData, ResultSet resultSet) throws SQLException;
+
     protected T toModel(ResultSetMetaData metaData, ResultSet resultSet) throws SQLException {
         if (!resultSet.next()) {
             return null;
@@ -96,17 +96,18 @@ public abstract class BasicRepositoryImpl<T> {
                         Method method = clazz.getDeclaredMethod(setterName.toString(), field.getType());
                         method.invoke(model, resultSet.getObject(i));  // Проблема здесь для полей Enum,
                         // они хранятся в ДБ как строки и возвращаются как строки
-                        break;
                     } catch (NoSuchMethodException | IllegalAccessException
                             | InvocationTargetException ignored) {
                     }
+                    break;
                 }
             }
         }
 
         return model;
     }
-*/
+
+
 
     protected abstract T getNewInstance();
 

@@ -12,9 +12,9 @@ public class LogoutPage extends Page {
     private void action(HttpServletRequest request, Map<String, Object> view) {
         User user = getUser();
         if (user != null) {
+            eventService.addEvent(new Event(user.getId(), Event.Type.LOGOUT));
             session.removeAttribute("user");
             setMessage("Good bye. Hope to see you soon!");
-            eventService.addEvent(new Event(user.getId(), Event.Type.LOGOUT));
         }
 
         throw new RedirectException("/index");

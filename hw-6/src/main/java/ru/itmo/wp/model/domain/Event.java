@@ -18,8 +18,8 @@ public class Event {
         this.userId = userId;
     }
 
-    public void setType(Type type) {
-        this.type = type;
+    public void setType(String typeName) {
+        this.type = Type.strToType.get(typeName);
     }
 
     public void setCreationTime(Date creationTime) {

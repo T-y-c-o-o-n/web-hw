@@ -37,7 +37,10 @@
         <ul>
             <li><a href="/index">Home</a></li>
             <li><a href="/users">Users</a></li>
-            <li><a href="/article">Article</a></li>
+            <#if user??>
+                <li><a href="/article">Article</a></li>
+                <li><a href="/myArticles">My Articles</a></li>
+            </#if>
         </ul>
     </nav>
 </header>
@@ -73,3 +76,11 @@
 </body>
 </html>
 </#macro>
+
+<#function findBy items key value>
+    <#list items as item>
+        <#if item[key] == value>
+            <#return item/>
+        </#if>
+    </#list>
+</#function>

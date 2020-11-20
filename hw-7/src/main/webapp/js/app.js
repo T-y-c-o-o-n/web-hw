@@ -12,7 +12,12 @@ function ajax(data, success) {
         dataType: "json",
         data: data,
         success: function (response) {
-            success(response);
+            if (success) {
+                success(response);
+            }
+            if (response["error"]) {
+                $(".error").text(response["error"]);
+            }
             if (response["redirect"]) {
                 location.href = response["redirect"];
             }

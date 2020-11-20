@@ -8,6 +8,7 @@ public class User implements Serializable {
     private String login;
     private Date creationTime;
     private String email;
+    private boolean admin;
 
     public User() {
     }
@@ -47,5 +48,13 @@ public class User implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
     }
 }

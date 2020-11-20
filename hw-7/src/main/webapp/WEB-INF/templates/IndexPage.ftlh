@@ -8,7 +8,9 @@
     <template>
         <article>
             <div class="title"></div>
-            <div class="information"></div>
+            <div class="information">
+                By <a class="userlink" href="#"></a> <purum class="creationTime"></purum>
+            </div>
             <div class="body"></div>
             <ul class="attachment">
                 <li>Announcement of <a href="#">Codeforces Round #510 (Div. 1)</a></li>
@@ -39,16 +41,14 @@
             let success = function (response) {
                 $noData.hide();
                 response["articles"].forEach(function (article) {
+                    if (article["hidden"]) {
+                        return;
+                    }
                     const $article = $($("main template").prop("content")).clone();
                     $article.find(".title").text(article["title"]);
                     $article.find(".body").text(article["text"]);
-                    $article.find(".information")
-                        .text(article["creationTime"]);
-                    ajax({ action: "findAuthor", userId: article["userId"] },
-                        function (response) {
-                            $article.find(".information")
-                                .text("By " + response["author"] + " " + article["creationTime"]);
-                        });
+                    $article.find(".information .userlink").text(response["userIdToLogin"][article["userId"]]);
+                    $article.find(".information .creationTime").text(article["creationTime"]);
                     $("main").append($article);
                 })
             }

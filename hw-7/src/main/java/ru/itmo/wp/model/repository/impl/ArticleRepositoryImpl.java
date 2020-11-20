@@ -1,7 +1,6 @@
 package ru.itmo.wp.model.repository.impl;
 
 import ru.itmo.wp.model.domain.Article;
-import ru.itmo.wp.model.domain.User;
 import ru.itmo.wp.model.exception.RepositoryException;
 import ru.itmo.wp.model.repository.ArticleRepository;
 
@@ -14,45 +13,29 @@ public class ArticleRepositoryImpl extends BasicRepositoryImpl<Article> implemen
     }
 
     @Override
-    protected Article toModel(ResultSetMetaData metaData, ResultSet resultSet) throws SQLException {
-        if (!resultSet.next()) {
-            return null;
-        }
-
-        Article article = new Article();
-        for (int i = 1; i <= metaData.getColumnCount(); i++) {
-            switch (metaData.getColumnName(i)) {
-                case "id":
-                    article.setId(resultSet.getLong(i));
-                    break;
-                case "userId":
-                    article.setUserId(resultSet.getLong(i));
-                    break;
-                case "title":
-                    article.setTitle(resultSet.getString(i));
-                    break;
-                case "text":
-                    article.setText(resultSet.getString(i));
-                    break;
-                case "creationTime":
-                    article.setCreationTime(resultSet.getTimestamp(i));
-                    break;
-                default:
-                    // No operations.
-            }
-        }
-
-        return article;
-    }
-
-    @Override
     protected Article getNewInstance() {
         return new Article();
     }
 
     @Override
-    public List<Article> findByUserId() {
-        return null;
+    public List<Article> findAllByUserId(long userId) {
+        return findAllByKeys(new Pair("userId", userId));
+    }
+
+    @Override
+    public void updateHidden(long id, boolean hidden) {
+        try (Connection connection = DATA_SOURCE.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement("UPDATE `Article` SET `hidden`=? WHERE `id`=?",
+                    Statement.NO_GENERATED_KEYS)) {
+                statement.setBoolean(1, hidden);
+                statement.setLong(2, id);
+                if (statement.executeUpdate() != 1) {
+                    throw new RepositoryException("Can't update Article.");
+                }
+            }
+        } catch (SQLException e) {
+            throw new RepositoryException("Can't update Article.", e);
+        }
     }
 
     @Override

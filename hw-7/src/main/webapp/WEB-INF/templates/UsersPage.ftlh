@@ -1,3 +1,5 @@
+<#-- @ftlvariable name="user" type="ru.itmo.wp.model.domain.User" -->
+<#-- @ftlvariable name="admin" type="boolean" -->
 <#-- @ftlvariable name="users" type="ru.itmo.wp.model.domain.User[]" -->
 <#import "commons.ftlh" as c>
 
@@ -9,6 +11,9 @@
             <tr>
                 <th>Id</th>
                 <th>Login</th>
+                <#if user?has_content && user.admin>
+                    <th>Admin</th>
+                </#if>
             </tr>
             </thead>
             <tbody>
@@ -16,6 +21,13 @@
                 <tr>
                     <td class="user_id"></td>
                     <td class="user_login"></td>
+                    <#if user?has_content && user.admin>
+                        <td>
+                            <span class="status"></span>
+                            |
+                            <a href="#" class="button"></a>
+                        </td>
+                    </#if>
                 </tr>
             </template>
             <tr class="noData">
@@ -41,18 +53,36 @@
                     const $tr = $($(".users template").prop("content")).clone();
                     $tr.find(".user_id").text(user["id"]);
                     $tr.find(".user_login").text(user["login"]);
-                    $tr.find("tr").attr("data-userId", user["id"]);
+                    if (user["admin"] === true) {
+                        $tr.find(".status").text("Admin");
+                        $tr.find(".button").text("Disable");
+                    } else if (user["admin"] === false) {
+                        $tr.find(".status").text("User");
+                        $tr.find(".button").text("Enable");
+                    }
+                    $tr.find(".status").attr("data_userId", user["id"]);
+                    $tr.find(".button").attr("data_userId", user["id"]);
                     $(".users tbody").append($tr);
                 });
-                $(".users tr").click(function () {
-                    $.ajax({
-                            action: "findUser",
-                            userId: $(this).attr("data-userId")
-                        },
+                $(".users .button").click(function () {
+                    let $this = $(this);
+                    let admin = $this.text() === "Enable";
+                    ajax({action: "updateAdmin", admin, targetUserId: $this.attr("data_userId")},
                         function (response) {
-                            notify(response["user"].creationTime);
+                            if (response["error"]) {
+                                window.notify("you don't have admin status")
+                            } else {
+                                if (admin) {
+                                    $this.text("Disable");
+                                    $(".users .status[data_userId=" + $this.attr("data_userId") + "]").text("Admin");
+                                } else {
+                                    $this.text("Enable");
+                                    $(".users .status[data_userId=" + $this.attr("data_userId") + "]").text("User");
+                                }
+                            }
                         }
-                    );
+                    )
+                    return false;
                 });
             }
             ajax(data, success);

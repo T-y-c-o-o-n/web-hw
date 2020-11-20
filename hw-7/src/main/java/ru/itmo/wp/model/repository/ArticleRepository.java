@@ -5,8 +5,9 @@ import ru.itmo.wp.model.domain.Article;
 import java.util.List;
 
 public interface ArticleRepository {
-    public Article find(long id);
+    Article find(long id);
     List<Article> findAll();
-    List<Article> findByUserId();
+    List<Article> findAllByUserId(long userId);
     void save(Article article);
+    void updateHidden(long id, boolean hidden);
 }

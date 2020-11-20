@@ -91,7 +91,30 @@ public class UserService {
         return user;
     }
 
-    public long findCount() {
-        return userRepository.findCount();
+    public void validateUpdatingAdmin(long loggedUserId, String targetIdString) throws ValidationException {
+        User user = userRepository.find(loggedUserId);
+        if (user == null) {
+            throw new ValidationException("You are hacker! To do this you should log in");
+        }
+        if (!user.isAdmin()) {
+            throw new ValidationException("To control admins you should be admin");
+        }
+
+        boolean incorrectId = false;
+        try {
+            long targetId = Long.parseLong(targetIdString);
+            if (userRepository.find(targetId) == null) {
+                incorrectId = true;
+            }
+        } catch (NumberFormatException e) {
+            incorrectId = true;
+        }
+        if (incorrectId) {
+            throw new ValidationException("you try to admin/disadmin incorrect user");
+        }
+    }
+
+    public void updateAdmin(long id, boolean admin) {
+        userRepository.updateAdmin(id, admin);
     }
 }

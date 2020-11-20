@@ -143,3 +143,11 @@ textarea {
     margin-top: 1rem;
     margin-bottom: 2rem;
 }
+
+.admin_status {
+    margin-right: 1rem;
+}
+
+.user_admin_a {
+    margin-left: 1rem;
+}

@@ -69,12 +69,7 @@
                     password,
                     passwordConfirmation
                 };
-                let success = function (response) {
-                    if (response["error"]) {
-                        $error.text(response["error"]);
-                    }
-                };
-                ajax(data, success);
+                ajax(data, (response) => {});
 
                 return false;
             });

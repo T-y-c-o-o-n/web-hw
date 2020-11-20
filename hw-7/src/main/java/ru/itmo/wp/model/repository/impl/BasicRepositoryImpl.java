@@ -1,9 +1,12 @@
 package ru.itmo.wp.model.repository.impl;
 
-import ru.itmo.wp.model.database.DatabaseUtils;
+import ru.itmo.wp.model.database.*;
 import ru.itmo.wp.model.exception.RepositoryException;
 
 import javax.sql.DataSource;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,8 +76,29 @@ public abstract class BasicRepositoryImpl<T> {
         }
     }
 
-    protected abstract T toModel(ResultSetMetaData metaData, ResultSet resultSet) throws SQLException;
-/*
+    public List<T> findAllByKeys(Pair... pairs) {
+        List<T> models = new ArrayList<>();
+        try (Connection connection = DATA_SOURCE.getConnection()) {
+            String params = Arrays.stream(pairs).map((el) -> String.format("`%s`=?", el.key))
+                .collect(Collectors.joining(" AND "));
+            try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM `" + modelName
+                    + "` WHERE " + params + " ORDER BY `id` DESC")) {
+                for (int i = 0; i < pairs.length; i++) {
+                    statement.setObject(i + 1, pairs[i].val);
+                }
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    T model;
+                    while ((model = toModel(statement.getMetaData(), resultSet)) != null) {
+                        models.add(model);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RepositoryException("Can't find " + modelName + ".", e);
+        }
+        return models;
+    }
+
     protected T toModel(ResultSetMetaData metaData, ResultSet resultSet) throws SQLException {
         if (!resultSet.next()) {
             return null;
@@ -91,19 +115,17 @@ public abstract class BasicRepositoryImpl<T> {
                     setterName.setCharAt("set".length(), Character.toUpperCase(setterName.charAt("set".length())));
                     try {
                         Method method = clazz.getDeclaredMethod(setterName.toString(), field.getType());
-                        method.invoke(model, resultSet.getObject(i));  // Проблема здесь для полей Enum,
-                        // они хранятся в ДБ как строки и возвращаются как строки
-                        break;
+                        method.invoke(model, resultSet.getObject(i));
                     } catch (NoSuchMethodException | IllegalAccessException
                             | InvocationTargetException ignored) {
                     }
+                    break;
                 }
             }
         }
 
         return model;
     }
-*/
 
     protected abstract T getNewInstance();
 

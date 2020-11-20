@@ -18,35 +18,6 @@ public class UserRepositoryImpl extends BasicRepositoryImpl<User> implements Use
     }
 
     @Override
-    protected User toModel(ResultSetMetaData metaData, ResultSet resultSet) throws SQLException {
-        if (!resultSet.next()) {
-            return null;
-        }
-
-        User user = new User();
-        for (int i = 1; i <= metaData.getColumnCount(); i++) {
-            switch (metaData.getColumnName(i)) {
-                case "id":
-                    user.setId(resultSet.getLong(i));
-                    break;
-                case "email":
-                    user.setEmail(resultSet.getString(i));
-                    break;
-                case "login":
-                    user.setLogin(resultSet.getString(i));
-                    break;
-                case "creationTime":
-                    user.setCreationTime(resultSet.getTimestamp(i));
-                    break;
-                default:
-                    // No operations.
-            }
-        }
-
-        return user;
-    }
-
-    @Override
     public User findByEmail(String email) {
         return findByKeys(new Pair("email", email));
     }
@@ -61,6 +32,22 @@ public class UserRepositoryImpl extends BasicRepositoryImpl<User> implements Use
     public User findByEmailAndPasswordSha(String email, String passwordSha) {
         return findByKeys(new Pair("email", email),
                 new Pair("passwordSha", passwordSha));
+    }
+
+    @Override
+    public void updateAdmin(long id, boolean val) {
+        try (Connection connection = DATA_SOURCE.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement("UPDATE `User` SET `admin`=? WHERE `id`=?",
+                    Statement.NO_GENERATED_KEYS)) {
+                statement.setBoolean(1, val);
+                statement.setLong(2, id);
+                if (statement.executeUpdate() != 1) {
+                    throw new RepositoryException("Can't update User.");
+                }
+            }
+        } catch (SQLException e) {
+            throw new RepositoryException("Can't update User.", e);
+        }
     }
 
     @Override

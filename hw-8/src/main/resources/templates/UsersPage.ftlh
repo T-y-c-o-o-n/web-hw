@@ -9,6 +9,7 @@
             <tr>
                 <th>Id</th>
                 <th>Login</th>
+                <th>Enable/Disable</th>
                 <th>Created</th>
             </tr>
             </thead>
@@ -24,6 +25,14 @@
                 <tr>
                     <td class="id">${user.id}</td>
                     <td class="login">${user.login}</td>
+                    <td>
+                        <form method="post" action="">
+                            <input type="hidden" name="idString" value="${user.id}">
+                            <button type="submit" name="action" value="<#if user.disabled>Enable<#else>Disable</#if>">
+                                <#if user.disabled>Enable<#else>Disable</#if>
+                            </button>
+                        </form>
+                    </td>
                     <td class="creationTime">${user.creationTime}</td>
                 </tr>
                 </#list>

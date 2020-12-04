@@ -2,17 +2,14 @@ package ru.itmo.wp.service;
 
 import org.springframework.stereotype.Service;
 import ru.itmo.wp.domain.*;
-import ru.itmo.wp.form.PostCredentials;
+import ru.itmo.wp.form.PostForm;
 import ru.itmo.wp.form.UserCredentials;
 import ru.itmo.wp.repository.PostRepository;
 import ru.itmo.wp.repository.RoleRepository;
 import ru.itmo.wp.repository.TagRepository;
 import ru.itmo.wp.repository.UserRepository;
 
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -63,14 +60,14 @@ public class UserService {
         return userRepository.findAllByOrderByIdDesc();
     }
 
-    public void writePost(User user, PostCredentials postCredentials) {
+    public void writePost(User user, PostForm postForm) {
         Post post = new Post();
-        post.setTitle(postCredentials.getTitle());
-        post.setText(postCredentials.getText());
+        post.setTitle(postForm.getTitle());
+        post.setText(postForm.getText());
 
-        Set<Tag> tags = Arrays.stream(postCredentials.getTags().split("\\s+"))
+        Set<Tag> tags = Arrays.stream(postForm.getTags().split("\\s+"))
                 .filter((name) -> !name.isEmpty()).map(Tag::new).collect(Collectors.toSet());
-        Set<Tag> updatedTags = new LinkedHashSet<>();
+        Set<Tag> updatedTags = new HashSet<>();
         for (Tag tag : tags) {
             if (tagRepository.countByName(tag.getName()) == 0) {
                 tag = tagRepository.save(tag);

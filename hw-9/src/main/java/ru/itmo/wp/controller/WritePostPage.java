@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import ru.itmo.wp.domain.Role;
-import ru.itmo.wp.form.PostCredentials;
+import ru.itmo.wp.form.PostForm;
 import ru.itmo.wp.security.AnyRole;
 import ru.itmo.wp.service.UserService;
 
@@ -25,13 +25,13 @@ public class WritePostPage extends Page {
     @AnyRole({Role.Name.WRITER, Role.Name.ADMIN})
     @GetMapping("/writePost")
     public String writePostGet(Model model) {
-        model.addAttribute("postForm", new PostCredentials());
+        model.addAttribute("postForm", new PostForm());
         return "WritePostPage";
     }
 
     @AnyRole({Role.Name.WRITER, Role.Name.ADMIN})
     @PostMapping("/writePost")
-    public String writePostPost(@Valid @ModelAttribute("postForm") PostCredentials postForm,
+    public String writePostPost(@Valid @ModelAttribute("postForm") PostForm postForm,
                                 BindingResult bindingResult,
                                 HttpSession httpSession) {
         if (bindingResult.hasErrors()) {

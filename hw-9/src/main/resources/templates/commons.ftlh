@@ -96,7 +96,7 @@
             <li>Announcement of <a href="#">Codeforces Round #510 (Div. 1)</a></li>
             <li>Announcement of <a href="#">Codeforces Round #510 (Div. 2)</a></li>
         </ul>
-        <div class="tags"><#list post.tags as tag><span class="tag-box">${tag.name}</span></#list></div>
+        <div class="tags"><#list post.tags?sort_by("name") as tag><span class="tag-box">${tag.name}</span></#list></div>
         <div class="footer">
             <div class="left">
                 <img src="<@spring.url '/img/voteup.png'/>" title="Vote Up" alt="Vote Up"/>

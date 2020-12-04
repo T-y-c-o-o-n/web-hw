@@ -6,8 +6,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import ru.itmo.wp.domain.Post;
 import ru.itmo.wp.domain.Role;
+import ru.itmo.wp.form.PostCredentials;
 import ru.itmo.wp.security.AnyRole;
 import ru.itmo.wp.service.UserService;
 
@@ -25,20 +25,20 @@ public class WritePostPage extends Page {
     @AnyRole({Role.Name.WRITER, Role.Name.ADMIN})
     @GetMapping("/writePost")
     public String writePostGet(Model model) {
-        model.addAttribute("post", new Post());
+        model.addAttribute("postForm", new PostCredentials());
         return "WritePostPage";
     }
 
     @AnyRole({Role.Name.WRITER, Role.Name.ADMIN})
     @PostMapping("/writePost")
-    public String writePostPost(@Valid @ModelAttribute("post") Post post,
+    public String writePostPost(@Valid @ModelAttribute("postForm") PostCredentials postForm,
                                 BindingResult bindingResult,
                                 HttpSession httpSession) {
         if (bindingResult.hasErrors()) {
             return "WritePostPage";
         }
 
-        userService.writePost(getUser(httpSession), post);
+        userService.writePost(getUser(httpSession), postForm);
         putMessage(httpSession, "You published new post");
 
         return "redirect:/posts";

@@ -138,3 +138,11 @@ aside section .footer a:after {
     background-color: var(--message-background-color);
     text-align: center;
 }
+
+.tag-box {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 0.08rem;
+    margin: 0.1rem;
+    font-family: verdana,arial,sans-serif;
+}

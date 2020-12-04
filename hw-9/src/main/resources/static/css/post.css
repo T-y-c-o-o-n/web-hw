@@ -1,4 +1,4 @@
-/* article */
+/* post */
 main article {
     margin-bottom: 2em;
 }
@@ -7,6 +7,11 @@ main article .title {
     color: var(--caption-color);
     font-weight: bold;
     font-size: 1.25rem;
+}
+
+
+main article .title a {
+    text-decoration: none;
 }
 
 main article .information {
@@ -74,4 +79,25 @@ main article .footer .positive-score {
     color: green;
     font-weight: bold;
     line-height: 1.75rem;
+}
+
+main .comment {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+    display: flow-root;
+}
+
+main .comment .commentator,
+main .comment .comment-text {
+    text-align: center;
+    display: inline;
+}
+
+main .comment .commentator {
+    float: left;
+}
+
+main .comment .comment-text {
+    margin-top: 3rem;
 }
